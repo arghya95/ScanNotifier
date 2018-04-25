@@ -33,9 +33,9 @@ export class HomePage {
               console.log(this.showAdminPart);
             })
           }
-          for(let key in data.deviceHistory) {
-            data.deviceHistory[key].uid = key
-            this.alldetails.push(data.deviceHistory[key])
+          for(let key in data.deviceInHistory) {
+            data.deviceInHistory[key].uid = key;
+            this.alldetails.push(data.deviceInHistory[key]);
           }
 
         }else{

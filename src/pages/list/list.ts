@@ -1,37 +1,50 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'page-list',
   templateUrl: 'list.html'
 })
 export class ListPage {
-  selectedItem: any;
-  icons: string[];
-  items: Array<{title: string, note: string, icon: string}>;
+  alldetails:any;
+  logintype:any;
+  showAdminPart:any;
+  
+  constructor(public zone:NgZone,public navCtrl: NavController, public navParams: NavParams) {
+    let self = firebase.auth().currentUser.uid;
+    let checkref = firebase.database().ref('users/' + self);
+    this.alldetails = [];
+    checkref.on('value',(snap1:any)=>{
+      if(snap1.val()){
+        let data = snap1.val();
+        if(data.usertype){
+          // this.alldetails.push(data.deviceHistory);
+          this.logintype = data.usertype;
+          if(data.usertype == "Admin"){
+            alert("admin found..!");
+            this.zone.run(()=>{
+              this.showAdminPart = true;
+              console.log(this.showAdminPart);
+            })
+          }else{
+            alert("admin not found..!")
+            this.zone.run(()=>{
+              this.showAdminPart = false;
+              console.log(this.showAdminPart);
+            })
+          }
+          for(let key in data.deviceOutHistory) {
+            data.deviceOutHistory[key].uid = key
+            this.alldetails.push(data.deviceOutHistory[key])
+          }
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    // If we navigated to this page, we will have an item available as a nav param
-    this.selectedItem = navParams.get('item');
-
-    // Let's populate this page with some filler content for funzies
-    this.icons = ['flask', 'wifi', 'beer', 'football', 'basketball', 'paper-plane',
-    'american-football', 'boat', 'bluetooth', 'build'];
-
-    this.items = [];
-    for (let i = 1; i < 11; i++) {
-      this.items.push({
-        title: 'Item ' + i,
-        note: 'This is item #' + i,
-        icon: this.icons[Math.floor(Math.random() * this.icons.length)]
-      });
-    }
+        }else{
+          this.showAdminPart = false;
+          console.log(this.showAdminPart);
+        }
+      }
+    })
   }
 
-  itemTapped(event, item) {
-    // That's right, we're pushing to ourselves!
-    this.navCtrl.push(ListPage, {
-      item: item
-    });
-  }
 }
