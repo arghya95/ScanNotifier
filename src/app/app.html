@@ -12,7 +12,14 @@
       </button>
     </ion-list>
   </ion-content>
-
+  <ion-footer class="sideMenuFooter">
+    <ion-item (click)="logout()" menuClose>
+      <ion-avatar item-start>
+        <ion-icon name="log-out"></ion-icon>
+      </ion-avatar>
+      <span>Logout</span>
+    </ion-item>
+  </ion-footer>
 </ion-menu>
 
 <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
